@@ -166,6 +166,12 @@
                 return;
             }
 
+            // تحقق مما إذا كان البريد الإلكتروني ينتهي بـ @gmail.com
+            if (!email.endsWith('@gmail.com')) {
+                alert('يرجى إدخال بريد إلكتروني صحيح ينتهي بـ @gmail.com.');
+                return;
+            }
+
             const newPassword = generatePassword(12); // يمكنك تغيير الطول هنا
             document.getElementById('password').innerText = newPassword;
             document.getElementById('copiedPassword').style.visibility = 'hidden'; // إخفاء منطقة العرض
